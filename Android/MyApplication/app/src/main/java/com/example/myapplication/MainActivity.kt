@@ -34,8 +34,14 @@ class MainActivity : AppCompatActivity() {
         intent?.data?.let { uri ->
             if (uri.toString().startsWith("http://localhost:8080/")) {
                 val authorization = uri.getQueryParameter("Authorization")
-                authorizationText.text = authorization ?: "No Authorization found"
+
+                // 새로운 액티비티를 시작하고 Authorization 값을 전달합니다.
+                val authorizationIntent = Intent(this, AuthorizationActivity::class.java).apply {
+                    putExtra("Authorization", authorization)
+                }
+                startActivity(authorizationIntent)
             }
         }
     }
+
 }
