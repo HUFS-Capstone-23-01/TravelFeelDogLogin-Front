@@ -7,51 +7,94 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import android.util.Log
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var authorizationText: TextView
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("651227713817-ruvfg1kslkhf6r6v2qobs667397hlkp3.apps.googleusercontent.com") // Replace with your server's client ID
+            .requestEmail()
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
         val googleLoginButton = findViewById<Button>(R.id.googleLoginButton)
         authorizationText = findViewById(R.id.authorizationText)
-        Log.d("AuthorizationLog","READY")
+
         googleLoginButton.setOnClickListener {
-            // 구글 로그인 페이지 열기
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://sunghyun98.com/oauth2/authorization/google"))
-            Log.d("!!1 INTENT", "Intent data: ${intent?.data}")
-            startActivity(intent)
+            signIn()
         }
-
-        // null
-        Log.d("!!2 INTENT", "Intent data: ${intent?.data}")
-        handleIntent(intent)
-    }
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        handleIntent(intent)
     }
 
-    private fun handleIntent(intent: Intent?) {
-        Log.d("!! HandleIntent", "Intent data: ${intent?.data}")
-        intent?.data?.let { uri ->
-            Log.d("URI CHECK t", "Received URI: ${uri.toString()}")
-            if (uri.toString().startsWith("https://sunghyun98.com/")) {
-                val authorization = uri.getQueryParameter("Authorization")
+    private fun signIn() {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
 
-                // 콘솔에 Authorization 값을 출력
-                Log.d("AuthorizationLog", "Authorization: $authorization")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
-                // 새로운 액티비티를 시작하고 Authorization 값을 전달합니다.
-                val authorizationIntent = Intent(this, AuthorizationActivity::class.java).apply {
-                    putExtra("Authorization", authorization)
-                }
-                startActivity(authorizationIntent)
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            handleSignInResult(task)
+        }
+    }
+
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+            val idToken = account?.idToken
+
+            if (idToken != null) {
+                sendTokenToServer(idToken)
+            }
+
+        } catch (e: ApiException) {
+            Log.w(TAG, "signInResult:failed code=" + e.statusCode)
+        }
+    }
+
+    private fun sendTokenToServer(token: String) {
+        val apiService = Retrofit.Builder()
+            .baseUrl("https://sunghyun98.com/login/mobile/oauth2/google") // Replace with your Spring Boot Base URL
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiService::class.java)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = apiService.mobileGoogleAuthenticationLogin(TokenLoginRequest(token))
+
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                Log.d(TAG, "AccessToken: ${responseBody?.body?.token?.accessToken}")
+                Log.d(TAG, "RefreshToken: ${responseBody?.body?.token?.refreshToken}")
+            } else {
+                Log.e(TAG, "Failed to authenticate with token: ${response.errorBody()}")
             }
         }
+    }
+
+
+    companion object {
+        private const val RC_SIGN_IN = 9001
+        private const val TAG = "MainActivity"
     }
 
 }
