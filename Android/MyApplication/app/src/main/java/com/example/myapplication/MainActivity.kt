@@ -21,9 +21,13 @@ class MainActivity : AppCompatActivity() {
         Log.d("AuthorizationLog","READY")
         googleLoginButton.setOnClickListener {
             // 구글 로그인 페이지 열기
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://sunghyun98.com/oauth2/authorization/google"))
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://sunghyun98.com/oauth2/authorization/google"))
+            Log.d("!!1 INTENT", "Intent data: ${intent?.data}")
             startActivity(intent)
         }
+
+        // null
+        Log.d("!!2 INTENT", "Intent data: ${intent?.data}")
         handleIntent(intent)
     }
     override fun onNewIntent(intent: Intent?) {
@@ -32,7 +36,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleIntent(intent: Intent?) {
+        Log.d("!! HandleIntent", "Intent data: ${intent?.data}")
         intent?.data?.let { uri ->
+            Log.d("URI CHECK t", "Received URI: ${uri.toString()}")
             if (uri.toString().startsWith("https://sunghyun98.com/")) {
                 val authorization = uri.getQueryParameter("Authorization")
 
@@ -43,7 +49,6 @@ class MainActivity : AppCompatActivity() {
                 val authorizationIntent = Intent(this, AuthorizationActivity::class.java).apply {
                     putExtra("Authorization", authorization)
                 }
-                //http://localhost:8080/oauth2/authorization/google
                 startActivity(authorizationIntent)
             }
         }
