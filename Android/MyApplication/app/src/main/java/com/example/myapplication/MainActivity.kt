@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-//https://sunghyun98.com/?Authorization=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqbzE4NzcxMkBnbWFpbC5jb20iLCJpYXQiOjE2OTc1OTU5NDQsImV4cCI6MTY5NzU5NjI0NH0.NwFCqUnpz52aLTgRVETgsq1SHktTKGEc2CM5FG9LGLU
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         handleIntent(intent)
