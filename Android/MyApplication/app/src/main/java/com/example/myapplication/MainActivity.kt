@@ -18,12 +18,13 @@ class MainActivity : AppCompatActivity() {
 
         val googleLoginButton = findViewById<Button>(R.id.googleLoginButton)
         authorizationText = findViewById(R.id.authorizationText)
-        Log.d("AuthorizationLog","NOT")
+        Log.d("AuthorizationLog","READY")
         googleLoginButton.setOnClickListener {
             // 구글 로그인 페이지 열기
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://sunghyun98.com/oauth2/authorization/google"))
             startActivity(intent)
         }
+        handleIntent(intent)
     }
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleIntent(intent: Intent?) {
         intent?.data?.let { uri ->
-            if (uri.toString().startsWith("http://sunghyun98.com/")) {
+            if (uri.toString().startsWith("https://sunghyun98.com/")) {
                 val authorization = uri.getQueryParameter("Authorization")
 
                 // 콘솔에 Authorization 값을 출력
