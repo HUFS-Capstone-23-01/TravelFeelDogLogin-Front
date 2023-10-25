@@ -1,12 +1,14 @@
-package com.example.myapplication
+package com.example.myapplication.view
 
 import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import android.util.Log
+import com.example.myapplication.R
+import com.example.myapplication.data.model.TokenLoginRequest
+import com.example.myapplication.data.api.LoginApi
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -76,7 +78,7 @@ class MainActivity : AppCompatActivity() {
             .baseUrl("https://sunghyun98.com/login/mobile/oauth2/google") // Replace with your Spring Boot Base URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiService::class.java)
+            .create(LoginApi::class.java)
 
         CoroutineScope(Dispatchers.IO).launch {
             val response = apiService.mobileGoogleAuthenticationLogin(TokenLoginRequest(token))

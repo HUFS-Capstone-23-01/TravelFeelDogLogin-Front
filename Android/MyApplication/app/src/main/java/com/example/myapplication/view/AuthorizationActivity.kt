@@ -1,8 +1,9 @@
-package com.example.myapplication
+package com.example.myapplication.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import com.example.myapplication.R
 
 class AuthorizationActivity : AppCompatActivity() {
 
