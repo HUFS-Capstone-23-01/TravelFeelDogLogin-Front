@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.app.Application
+import com.example.myapplication.data.di.networkModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -10,7 +11,7 @@ class MyApplication: Application() {
 
         startKoin {
             androidContext(this@MyApplication)
-            modules()
+            modules(networkModule)
         }
     }
 }
