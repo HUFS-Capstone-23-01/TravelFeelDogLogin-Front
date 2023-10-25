@@ -1,5 +1,6 @@
 package com.example.myapplication.data.di
 
+import com.example.myapplication.BuildConfig
 import com.example.myapplication.data.api.LoginApi
 import com.example.myapplication.data.api.network.NetworkInterceptor
 import com.google.gson.GsonBuilder
@@ -25,7 +26,7 @@ val networkModule = module {
         Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
             .client(get())
-            .baseUrl("BuildConfig.BASE_URL")
+            .baseUrl(BuildConfig.API_URL)
             .build()
     }
 
