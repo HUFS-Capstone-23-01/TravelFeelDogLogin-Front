@@ -1,4 +1,4 @@
-package com.example.myapplication.data.api.network
+package com.example.myapplication.datalayer.api.network
 
 import okhttp3.Interceptor
 import okhttp3.Response

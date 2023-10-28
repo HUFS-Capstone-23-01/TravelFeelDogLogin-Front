@@ -1,10 +1,10 @@
-package com.example.myapplication.data.model.googlelogin
-import com.example.myapplication.data.model.auth.TokenResponse
+package com.example.myapplication.datalayer.model.googlelogin
+import com.example.myapplication.datalayer.model.auth.TokenResponse
 import com.google.gson.annotations.SerializedName
 
 data class GoogleLoginResponse(
     @SerializedName("data")
-    val `data`: Data,
+    val `data`: Data?,
     @SerializedName("message")
     val message: String
 )
