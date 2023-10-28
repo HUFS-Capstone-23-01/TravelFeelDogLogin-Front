@@ -1,8 +1,8 @@
-package com.example.myapplication.data.di
+package com.example.myapplication.datalayer.di
 
 import com.example.myapplication.BuildConfig
-import com.example.myapplication.data.api.LoginApi
-import com.example.myapplication.data.api.network.NetworkInterceptor
+import com.example.myapplication.datalayer.api.LoginApi
+import com.example.myapplication.datalayer.api.network.NetworkInterceptor
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
